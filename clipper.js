@@ -1,5 +1,5 @@
 // 网页剪藏，输出包含 computedStyle 的 HTML String
-function clipper (node = document.body) {
+function clipper (node = document.body, rmSelector = null) {
     var iframe = document.createElement("iframe");
     iframe.setAttribute('id', 'mirror-container');
     iframe.style.width = iframe.style.height = 0;
@@ -7,7 +7,7 @@ function clipper (node = document.body) {
     var mirrorContainer = document.getElementById('mirror-container');
     setTagANDgetStyle(node);
     var mirrorNode = node.cloneNode(true);
-    rmNoPrint(mirrorNode, config.rd5.rm);
+    rmNoPrint(mirrorNode, rmSelector);
     convertImgToBase64(mirrorNode);
     mirrorContainer.contentDocument.body.appendChild(mirrorNode);
     filterStyle(mirrorContainer.contentDocument.body);
@@ -16,6 +16,7 @@ function clipper (node = document.body) {
 };
 
 function rmNoPrint(container, rm) {
+    if(null == rm) return;
     var rmList = container.querySelectorAll(rm);
     rmList.forEach(node => {
         var pa = node.parentNode;
