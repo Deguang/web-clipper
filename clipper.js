@@ -1,4 +1,8 @@
-// 网页剪藏，输出包含 computedStyle 的 HTML String
+/**
+ * 网页剪藏，输出包含 computedStyle 的 HTML String
+ * @param {NodeElement} node, default: document.body
+ * @param {string} rmSelector, default: null
+ */
 function clipper (node = document.body, rmSelector = null) {
     var iframe = document.createElement("iframe");
     iframe.setAttribute('id', 'mirror-container');
@@ -115,3 +119,5 @@ function l(e, t) {
     for (var r in t) e[r] !== t[r] && (n[r] = t[r]);
     return n
 }
+
+module.exports = clipper
