@@ -12,7 +12,7 @@ function clipper (node = document.body, rmSelector = null) {
     setTagANDgetStyle(node);
     var mirrorNode = node.cloneNode(true);
     rmNoPrint(mirrorNode, rmSelector);
-    convertImgToBase64(mirrorNode);
+    // convertImgToBase64(mirrorNode);
     mirrorContainer.contentDocument.body.appendChild(mirrorNode);
     filterStyle(mirrorContainer.contentDocument.body);
     console.log(mirrorContainer.contentDocument.body.innerHTML);
@@ -62,7 +62,7 @@ var CSSList = [],
 function setTagANDgetStyle(node) {
     var n = 0,
         loop = function loopNode(node) {
-            var style = u(node);
+            var style = reduceComputedStyle(node);
             CSSList[n] = style, node.setAttribute("data-clipper-id", n++);
             for (var o = 0; o < node.children.length; o++) {
                 loopNode(node.children.item(o))
@@ -71,7 +71,7 @@ function setTagANDgetStyle(node) {
     loop(node)
 }
 
-function u(node) {
+function reduceComputedStyle(node) {
     var n = {}, r = node && 1 === node.nodeType ? window.getComputedStyle(node, null) : null;
     if (!r) return n;
     for (var i = 0; i < r.length / 2; i++) {
@@ -91,15 +91,15 @@ function filterStyle(node){
             item.removeAttribute('data-clipper-id');
             item.removeAttribute('style');
             var style = CSSList[index],
-            curStyle = curStyle || u(item),
-                cptStyle = l(curStyle, style);
+            curStyle = curStyle || reduceComputedStyle(item),
+                cptStyle = filterInheritStyle(curStyle, style);
             if(Object.keys(cptStyle).length) {
                 item.setAttribute('style',((style) =>{
                     var t = "";
                     for (var n in style) t += n + ":" + style[n] + ";";
                     return t.trim()
                 })(cptStyle));
-                var rCptStyle = l(u(item), style);
+                var rCptStyle = filterInheritStyle(reduceComputedStyle(item), style);
                 if(Object.keys(rCptStyle).length) {
                     for (var h in rCptStyle) cptStyle[h] = rCptStyle[h];
                     item.setAttribute('style',((style) =>{
@@ -114,7 +114,7 @@ function filterStyle(node){
     }
 }
 
-function l(e, t) {
+function filterInheritStyle(e, t) {
     var n = {};
     for (var r in t) e[r] !== t[r] && (n[r] = t[r]);
     return n
