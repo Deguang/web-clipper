@@ -19,14 +19,21 @@ function clipper (node = document.body, rmSelector = null) {
     document.documentElement.removeChild(iframe);
 };
 
+/**
+ * 
+ * @param {Node} container 
+ * @param {String} rm , multi filter use , to concat
+ */
 function rmNoPrint(container, rm) {
     if(null == rm) return;
-    var rmList = container.querySelectorAll(rm);
-    rmList.forEach(node => {
-        var pa = node.parentNode;
-        if(pa) {
-            pa.removeChild(node)
-        }
+    rm.split(',').forEach(function(item) {
+        var rmList = container.querySelectorAll(item);
+        rmList.forEach(node => {
+            var pa = node.parentNode;
+            if(pa) {
+                pa.removeChild(node)
+            }
+        })
     })
 }
 
